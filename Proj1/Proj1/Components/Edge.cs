@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Security.Policy;
-
-namespace Proj1.Components
+﻿namespace Proj1.Components
 {
     enum EdgeType
     {

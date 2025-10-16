@@ -24,7 +24,7 @@ namespace Proj1.Components
             SolidBrush brush = new(Color.Black);
             Pen pen1 = new(Color.Black);
             Pen pen2 = new(Color.Green);
-            foreach (var edge in Edges)
+            foreach (Edge edge in Edges)
             {
                 if (edge.Type == EdgeType.Normal)
                 {
@@ -38,6 +38,8 @@ namespace Proj1.Components
                 {
                     g.DrawLine(pen1, edge.V1.Center(), edge.V2.Center());
                 }
+                string mod = Visuals.SwitchEdgeLabel(edge.Modifier, edge.ConstLength);
+                Visuals.DrawEdgeLabel(g, edge, mod);
             }
         }
         public void AddVertexOnMiddle(Edge e)
@@ -105,58 +107,58 @@ namespace Proj1.Components
             Edges.Remove(edges[0]);
             Edges.Remove(edges[1]);
         }
-        public void MouseDownPolygon(Point p, bool b, Vertex? draggedVertex)
+        public void MouseDownPolygon(Point mouse, bool isCtrlClicked, Vertex? draggedVertex)
         {
             IsDragging = true;
-            IsCtrlClicked = b;
-            if (b) MouseOffset = p;
+            IsCtrlClicked = isCtrlClicked;
+            if (IsCtrlClicked) MouseOffset = mouse;
             else
             {
-                if (draggedVertex != null) MouseOffset = new Point(p.X - draggedVertex.Location.X, p.Y - draggedVertex.Location.Y);
-                else MouseOffset = p;
+                if (draggedVertex != null) MouseOffset = new Point(mouse.X - draggedVertex.Location.X, mouse.Y - draggedVertex.Location.Y);
+                else MouseOffset = mouse;
             }
         }
-        public void MouseMovePolygon(Point p, Vertex dV)
+        public void MouseMovePolygon(Point mouse, Vertex dragged)
         {
             if (!IsDragging) return;
             if (IsCtrlClicked)
             {
-                int dx = p.X - MouseOffset.X;
-                int dy = p.Y - MouseOffset.Y;
+                int dx = mouse.X - MouseOffset.X;
+                int dy = mouse.Y - MouseOffset.Y;
                 if (dx == 0 && dy == 0)
                 {
-                    MouseOffset = p;
+                    MouseOffset = mouse;
                     return;
                 }
-                foreach (var ver in Vertices) ver.Location = new Point(ver.Location.X + dx, ver.Location.Y + dy);
+                foreach (Vertex v in Vertices) v.Location = new Point(v.Location.X + dx, v.Location.Y + dy);
                 MouseOffset = new Point(MouseOffset.X + dx, MouseOffset.Y + dy);
                 Invalidate();
             }
             else
             {
-                (List<Vertex> leftchain, List<Vertex> rightchain) = GetMoveChain(dV);
+                (List<Vertex> leftchain, List<Vertex> rightchain) = GetMoveChain(dragged);
                 if (leftchain.Count == 0 && rightchain.Count == 0)
                 {
-                    Point newLocation = new(p.X - MouseOffset.X, p.Y - MouseOffset.Y);
-                    dV.Location = newLocation;
+                    Point newLocation = new(mouse.X - MouseOffset.X, mouse.Y - MouseOffset.Y);
+                    dragged.Location = newLocation;
                     Invalidate();
                 }
                 else
-                {                    
-                    Point newLocation = new(p.X - MouseOffset.X, p.Y - MouseOffset.Y);
-                    dV.Location = newLocation;
+                {
+                    Point newLocation = new(mouse.X - MouseOffset.X, mouse.Y - MouseOffset.Y);
+                    dragged.Location = newLocation;
 
-                    Vertex dragged = dV;
+                    Vertex v = dragged;
                     for (int i = 0; i < rightchain.Count; i++)
                     {
-                        ApplyMove(dragged, rightchain[i]);
-                        dragged = rightchain[i];
+                        ApplyMove(v, rightchain[i]);
+                        v = rightchain[i];
                     }
-                    dragged = dV;
+                    v = dragged;
                     for (int i = 0; i < leftchain.Count; i++)
                     {
-                        ApplyMove(dragged, leftchain[i]);
-                        dragged = leftchain[i];
+                        ApplyMove(v, leftchain[i]);
+                        v = leftchain[i];
                     }
                     Invalidate();
                 }

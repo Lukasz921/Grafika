@@ -38,5 +38,42 @@
             g.DrawArc(p1, rect, startAngle, 180f);
             g.DrawLine(p2, e.V1.Center(), e.V2.Center());
         }
+        public static void DrawEdgeLabel(Graphics g, Edge e, string text)
+        {
+            if (text == null || text.Length == 0 || text == "") return;
+
+            var font = SystemFonts.DefaultFont;
+            var a = e.V1.Center();
+            var b = e.V2.Center();
+
+            float mx = (a.X + b.X) / 2f;
+            float my = (a.Y + b.Y) / 2f;
+
+            SizeF sz = g.MeasureString(text, font);
+
+            RectangleF bg = new(mx - sz.Width / 2f - 4f, my - sz.Height / 2f - 2f, sz.Width + 8f,sz.Height + 4f);
+
+            using var brushBg = new SolidBrush(Color.FromArgb(220, Color.White));
+            using var penBorder = new Pen(Color.Black, 1f);
+            using var brushText = new SolidBrush(Color.Black);
+
+            g.FillRectangle(brushBg, bg);
+            g.DrawRectangle(penBorder, Rectangle.Round(bg));
+
+            var sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+            g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+            g.DrawString(text, font, brushText, bg, sf);
+        }
+
+        public static string SwitchEdgeLabel(EdgeModifier mod, double constLength = 0)
+        {
+            return mod switch
+            {
+                EdgeModifier.Const => Math.Round(constLength, 1).ToString(),
+                EdgeModifier.Vertical => "Vertical",
+                EdgeModifier.Lock45 => "Lock45",
+                _ => ""
+            };
+        }
     }
 }
