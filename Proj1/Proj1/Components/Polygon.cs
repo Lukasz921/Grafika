@@ -2,9 +2,10 @@
 
 namespace Proj1.Components
 {
-    internal class Polygon : Panel
+    internal partial class Polygon : Panel
     {
         public bool IsDragging { get; set; } = false;
+        public bool IsCtrlClicked { get; set; } = false;
         public Point MouseOffset { get; set; } = Point.Empty;
         public List<Vertex> Vertices { get; set; } = [];
         public List<Edge> Edges { get; set; } = [];
@@ -27,42 +28,16 @@ namespace Proj1.Components
             {
                 if (edge.Type == EdgeType.Normal)
                 {
-                    BresenhamLine(g, edge.V1.Center().X, edge.V1.Center().Y, edge.V2.Center().X, edge.V2.Center().Y, brush);
+                    Visuals.BresenhamLine(g, edge, brush);
                 }
                 if (edge.Type == EdgeType.SemiCircle)
                 {
-                    var a = edge.V1.Center();
-                    var b = edge.V2.Center();
-                    float cx = (a.X + b.X) / 2f;
-                    float cy = (a.Y + b.Y) / 2f;
-                    float radius = (float)(Math.Sqrt((a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y)) / 2.0);
-                    var rect = new RectangleF(cx - radius, cy - radius, radius * 2f, radius * 2f);
-                    double angleRad = Math.Atan2(a.Y - cy, a.X - cx);
-                    float startAngle = (float)(angleRad * 180.0 / Math.PI);
-                    g.DrawArc(pen1, rect, startAngle, 180f);
-                    g.DrawLine(pen2, edge.V1.Center(), edge.V2.Center());
+                    Visuals.SemiCircle(g, edge, pen1, pen2);
                 }
                 if (edge.Type == EdgeType.Bezier)
                 {
                     g.DrawLine(pen1, edge.V1.Center(), edge.V2.Center());
                 }
-            }
-        }
-        private static void BresenhamLine(Graphics g, int x0, int y0, int x1, int y1, Brush brush)
-        {
-            int dx = Math.Abs(x1 - x0);
-            int dy = Math.Abs(y1 - y0);
-            int sx = x0 < x1 ? 1 : -1;
-            int sy = y0 < y1 ? 1 : -1;
-            int err = dx - dy;
-
-            while (true)
-            {
-                g.FillRectangle(brush, x0, y0, 1, 1);
-                if (x0 == x1 && y0 == y1) break;
-                int e2 = 2 * err;
-                if (e2 > -dy) { err -= dy; x0 += sx; }
-                if (e2 < dx) { err += dx; y0 += sy; }
             }
         }
         public void AddVertexOnMiddle(Edge e)
@@ -74,6 +49,21 @@ namespace Proj1.Components
             Edge e1 = new(e.V1, v);
             Edge e2 = new(e.V2, v);
 
+            if (e.V1.LeftEdge != null && e.V1.LeftEdge == e)
+            {
+                v.RightEdge = e1;
+                v.LeftEdge = e2;
+                e.V1.LeftEdge = e1;
+                e.V2.RightEdge = e2;
+            }
+            else
+            {
+                v.LeftEdge = e1;
+                v.RightEdge = e2;
+                e.V1.RightEdge = e1;
+                e.V2.LeftEdge = e2;
+            }
+
             Vertices.Add(v);
             Controls.Add(v);
             Edges.Remove(e);
@@ -84,7 +74,7 @@ namespace Proj1.Components
         {
             if (Vertices.Count <= 3) return;
 
-            List<Edge> edges = new List<Edge>();
+            List<Edge> edges = [];
             foreach(Edge edge in Edges)
             {
                 if (edge.V1 == v || edge.V2 == v) edges.Add(edge);
@@ -98,49 +88,84 @@ namespace Proj1.Components
 
             Edge e = new(v1, v2);
 
+            if (v1.LeftEdge != null && (v1.LeftEdge.V1 == v || v1.LeftEdge.V2 == v))
+            {
+                v1.LeftEdge = e;
+                v2.RightEdge = e;
+            }
+            else
+            {
+                v1.RightEdge = e;
+                v2.LeftEdge = e;
+            }
+
             Vertices.Remove(v);
             Controls.Remove(v);
             Edges.Add(e);
             Edges.Remove(edges[0]);
             Edges.Remove(edges[1]);
         }
-        public void MouseDownPolygon(Point p)
+        public void MouseDownPolygon(Point p, bool b, Vertex? draggedVertex)
         {
             IsDragging = true;
-            MouseOffset = p;
+            IsCtrlClicked = b;
+            if (b) MouseOffset = p;
+            else
+            {
+                if (draggedVertex != null) MouseOffset = new Point(p.X - draggedVertex.Location.X, p.Y - draggedVertex.Location.Y);
+                else MouseOffset = p;
+            }
         }
-        public void MouseMovePolygon(Point p)
+        public void MouseMovePolygon(Point p, Vertex dV)
         {
             if (!IsDragging) return;
-
-            int dx = p.X - MouseOffset.X;
-            int dy = p.Y - MouseOffset.Y;
-
-            int minXAfter = Vertices.Min(v => v.Location.X + dx);
-            int maxXAfter = Vertices.Max(v => v.Location.X + dx + v.Width);
-            int minYAfter = Vertices.Min(v => v.Location.Y + dy);
-            int maxYAfter = Vertices.Max(v => v.Location.Y + dy + v.Height);
-
-            if (minXAfter < 0) dx -= minXAfter;
-            if (maxXAfter > ClientSize.Width) dx -= (maxXAfter - ClientSize.Width);
-            if (minYAfter < 0) dy -= minYAfter;
-            if (maxYAfter > ClientSize.Height) dy -= (maxYAfter - ClientSize.Height);
-
-            if (dx == 0 && dy == 0)
+            if (IsCtrlClicked)
             {
-                MouseOffset = p;
-                return;
+                int dx = p.X - MouseOffset.X;
+                int dy = p.Y - MouseOffset.Y;
+                if (dx == 0 && dy == 0)
+                {
+                    MouseOffset = p;
+                    return;
+                }
+                foreach (var ver in Vertices) ver.Location = new Point(ver.Location.X + dx, ver.Location.Y + dy);
+                MouseOffset = new Point(MouseOffset.X + dx, MouseOffset.Y + dy);
+                Invalidate();
             }
-            foreach (var v in Vertices)
+            else
             {
-                v.Location = new Point(v.Location.X + dx, v.Location.Y + dy);
+                (List<Vertex> leftchain, List<Vertex> rightchain) = GetMoveChain(dV);
+                if (leftchain.Count == 0 && rightchain.Count == 0)
+                {
+                    Point newLocation = new(p.X - MouseOffset.X, p.Y - MouseOffset.Y);
+                    dV.Location = newLocation;
+                    Invalidate();
+                }
+                else
+                {                    
+                    Point newLocation = new(p.X - MouseOffset.X, p.Y - MouseOffset.Y);
+                    dV.Location = newLocation;
+
+                    Vertex dragged = dV;
+                    for (int i = 0; i < rightchain.Count; i++)
+                    {
+                        ApplyMove(dragged, rightchain[i]);
+                        dragged = rightchain[i];
+                    }
+                    dragged = dV;
+                    for (int i = 0; i < leftchain.Count; i++)
+                    {
+                        ApplyMove(dragged, leftchain[i]);
+                        dragged = leftchain[i];
+                    }
+                    Invalidate();
+                }
             }
-            MouseOffset = new Point(MouseOffset.X + dx, MouseOffset.Y + dy);
-            Invalidate();
         }
         public void MouseUpPolygon()
         {
             IsDragging = false;
+            IsCtrlClicked = false;
         }
     }
 }

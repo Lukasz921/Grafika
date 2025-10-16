@@ -11,31 +11,35 @@
             Owner = owner ?? throw new ArgumentNullException(nameof(owner));
             Menu = new ContextMenuStrip();
 
-            var typesItem = new ToolStripMenuItem("Types");
-            var normalItem = new ToolStripMenuItem("Normal");
-            var semiItem = new ToolStripMenuItem("Semicircle");
-            var bezierItem = new ToolStripMenuItem("Bezier");
+            var type = new ToolStripMenuItem("Types");
+            var typenormal = new ToolStripMenuItem("Normal");
+            var typesemicircle = new ToolStripMenuItem("Semicircle");
+            var typebezier = new ToolStripMenuItem("Bezier");
+            typenormal.Click += (_, __) => { if (Hit != null) ApplyTypeNormal(); Hit = null; };
+            typesemicircle.Click += (_, __) => { if (Hit != null) ApplyTypeSemiCircle(); Hit = null; };
+            typebezier.Click += (_, __) => { if (Hit != null) ApplyTypeBezier(); Hit = null; };
+            type.DropDownItems.Add(typenormal);
+            type.DropDownItems.Add(typesemicircle);
+            type.DropDownItems.Add(typebezier);
+            Menu.Items.Add(type);
 
-            normalItem.Click += (_, __) => { if (Hit != null) ApplyTypeNormal(); Hit = null; };
-            semiItem.Click += (_, __) => { if (Hit != null) ApplyTypeSemiCircle(); Hit = null; };
-            bezierItem.Click += (_, __) => { if (Hit != null) ApplyTypeBezier(); Hit = null; };
+            var modifiers = new ToolStripMenuItem("Modifiers");
+            var normalmodifier = new ToolStripMenuItem("Normal");
+            var constmodifier = new ToolStripMenuItem("Const");
+            var verticalmodifier = new ToolStripMenuItem("Vertical");
+            var lock45modifier = new ToolStripMenuItem("Lock45");
+            normalmodifier.Click += (_, __) => { if (Hit != null) ApplyModifierNormal(); Hit = null; };
+            constmodifier.Click += (_, __) => { if (Hit != null) ApplyModifierConst(); Hit = null; };
+            verticalmodifier.Click += (_, __) => { if (Hit != null) ApplyModifierVertical(); Hit = null; };
+            lock45modifier.Click += (_, __) => { if (Hit != null) ApplyModifierLock45(); Hit = null; };
+            modifiers.DropDownItems.Add(normalmodifier);
+            modifiers.DropDownItems.Add(constmodifier);
+            modifiers.DropDownItems.Add(verticalmodifier);
+            modifiers.DropDownItems.Add(lock45modifier);
+            Menu.Items.Add(modifiers);
 
-            typesItem.DropDownItems.Add(normalItem);
-            typesItem.DropDownItems.Add(semiItem);
-            typesItem.DropDownItems.Add(bezierItem);
-            Menu.Items.Add(typesItem);
-            var modifiersItem = new ToolStripMenuItem("Modifiers");
-            Menu.Items.Add(modifiersItem);
             var add = new ToolStripMenuItem("Add vertex");
-            add.Click += (_, __) =>
-            {
-                if (Hit != null)
-                {
-                    Owner.AddVertexOnMiddle(Hit);
-                    Owner.Invalidate();
-                    Hit = null;
-                }
-            };
+            add.Click += (_, __) => { if (Hit != null) AddVertex(); };
             Menu.Items.Add(add);
 
             Owner.MouseDown += Owner_MouseDown;
@@ -70,6 +74,12 @@
             double dx2 = px - projX, dy2 = py - projY;
             return Math.Sqrt(dx2 * dx2 + dy2 * dy2);
         }
+        private void AddVertex()
+        {
+            Owner.AddVertexOnMiddle(Hit!);
+            Owner.Invalidate();
+            Hit = null;
+        }
         private void ApplyTypeNormal()
         {
             Hit!.Type = EdgeType.Normal;
@@ -83,6 +93,30 @@
         private void ApplyTypeBezier()
         {
             Hit!.Type = EdgeType.Bezier;
+            Owner.Invalidate();
+        }
+        private void ApplyModifierNormal()
+        {
+            Hit!.Modifier = EdgeModifier.Normal;
+            Hit!.ConstLength = 0;
+            Owner.Invalidate();
+        }
+        private void ApplyModifierConst()
+        {
+            Hit!.Modifier = EdgeModifier.Const;
+            Hit!.ConstLength = Hit!.CurrLength();
+            Owner.Invalidate();
+        }
+        private void ApplyModifierVertical()
+        {
+            Hit!.Modifier = EdgeModifier.Vertical;
+            Hit!.ConstLength = 0;
+            Owner.Invalidate();
+        }
+        private void ApplyModifierLock45()
+        {
+            Hit!.Modifier = EdgeModifier.Lock45;
+            Hit!.ConstLength = 0;
             Owner.Invalidate();
         }
     }

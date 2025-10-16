@@ -2,8 +2,8 @@
 {
     internal class Vertex : PictureBox
     {
-        private bool IsDragging = false;
-        private Point MouseOffset = Point.Empty;
+        public Edge? LeftEdge { get; set; } = null;
+        public Edge? RightEdge { get; set; } = null;
         public Vertex(Point p)
         {
             Width = 24;
@@ -33,51 +33,32 @@
         private void Vertex_MouseDown(object? sender, MouseEventArgs e)
         {
             if (Parent == null) return;
+            Point mouse = Parent.PointToClient(Cursor.Position);
             if (e.Button == MouseButtons.Left && ModifierKeys.HasFlag(Keys.Control) && Parent is Polygon polygon1)
             {
-                Point mouse = Parent.PointToClient(Cursor.Position);
-                polygon1.MouseDownPolygon(mouse);
+                polygon1.MouseDownPolygon(mouse, true, null);
                 Capture = true;
             }
-            else if (e.Button == MouseButtons.Left)
+            else if (e.Button == MouseButtons.Left && Parent is Polygon polygon2)
             {
-                Point mouse = Parent.PointToClient(Cursor.Position);
-                MouseOffset = new Point(mouse.X - Location.X, mouse.Y - Location.Y);
-                IsDragging = true;
+                polygon2.MouseDownPolygon(mouse, false, this);
                 Capture = true;
             }
-            else if (e.Button == MouseButtons.Right)
+            else if (e.Button == MouseButtons.Right && Parent is Polygon polygon3)
             {
-                if (Parent is Polygon polygon2)
-                {
-                    polygon2.RemoveVertexOnMiddle(this);
-                    polygon2.Invalidate();
-                }
+                polygon3.RemoveVertexOnMiddle(this);
+                polygon3.Invalidate();
             }
         }
+
         private void Vertex_MouseMove(object? sender, MouseEventArgs e)
         {
             if (Parent == null) return;
             if (Parent is Polygon poly && poly.IsDragging)
             {
                 Point mouse = Parent.PointToClient(Cursor.Position);
-                poly.MouseMovePolygon(mouse);
-                return;
+                poly.MouseMovePolygon(mouse, this);
             }
-            if (!IsDragging) return;
-
-            Point mousePos = Parent.PointToClient(Cursor.Position);
-            Point newLocation = new(mousePos.X - MouseOffset.X, mousePos.Y - MouseOffset.Y);
-
-            int maxX = Parent.ClientSize.Width - Width;
-            int maxY = Parent.ClientSize.Height - Height;
-            if (newLocation.X < 0) newLocation.X = 0;
-            else if (newLocation.X > maxX) newLocation.X = maxX;
-            if (newLocation.Y < 0) newLocation.Y = 0;
-            else if (newLocation.Y > maxY) newLocation.Y = maxY;
-
-            Location = newLocation;
-            Parent?.Invalidate();
         }
         private void Vertex_MouseUp(object? sender, MouseEventArgs e)
         {
@@ -85,11 +66,7 @@
             {
                 poly.MouseUpPolygon();
                 Capture = false;
-                return;
             }
-            if (e.Button != MouseButtons.Left) return;
-            IsDragging = false;
-            Capture = false;
         }
     }
 }
