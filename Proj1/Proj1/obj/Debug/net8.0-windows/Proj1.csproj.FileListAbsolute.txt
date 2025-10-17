@@ -49,3 +49,4 @@ C:\Users\pluka\Desktop\STUDIA\Grafika\Proj1\Proj1\obj\Debug\net8.0-windows\Proj1
 C:\Users\pluka\Desktop\STUDIA\Grafika\Proj1\Proj1\obj\Debug\net8.0-windows\Proj1.genruntimeconfig.cache
 C:\Users\pluka\Desktop\STUDIA\Grafika\Proj1\Proj1\obj\Debug\net8.0-windows\ref\Proj1.dll
 C:\Users\pluka\Desktop\STUDIA\Grafika\Proj1\Proj1\obj\Debug\net8.0-windows\Proj1.Components.ConstForm.resources
+C:\Users\pluka\Desktop\Grafika\Proj1\Proj1\obj\Debug\net8.0-windows\Proj1.Components.ConstForm.resources

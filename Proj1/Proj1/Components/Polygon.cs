@@ -32,7 +32,8 @@ namespace Proj1.Components
                 }
                 if (edge.Type == EdgeType.SemiCircle)
                 {
-                    Visuals.SemiCircle(g, edge, pen1, pen2);
+                    if (edge.V1.Type == VertexType.G1 || edge.V2.Type == VertexType.G1) Visuals.SemiCircleG1(g, edge, pen1, pen2);
+                    else Visuals.SemiCircleG0(g, edge, pen1, pen2);
                 }
                 if (edge.Type == EdgeType.Bezier)
                 {

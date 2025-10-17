@@ -3,28 +3,20 @@
   "WorkspaceRootPath": "C:\\Users\\pluka\\Desktop\\Grafika\\Proj1\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{18AE1E6D-08A3-4F24-9026-5A97C7B5ADEF}|Proj1\\Proj1.csproj|c:\\users\\pluka\\desktop\\grafika\\proj1\\proj1\\components\\help.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{18AE1E6D-08A3-4F24-9026-5A97C7B5ADEF}|Proj1\\Proj1.csproj|solutionrelative:proj1\\components\\help.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{18AE1E6D-08A3-4F24-9026-5A97C7B5ADEF}|Proj1\\Proj1.csproj|c:\\users\\pluka\\desktop\\grafika\\proj1\\proj1\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{18AE1E6D-08A3-4F24-9026-5A97C7B5ADEF}|Proj1\\Proj1.csproj|solutionrelative:proj1\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{18AE1E6D-08A3-4F24-9026-5A97C7B5ADEF}|Proj1\\Proj1.csproj|c:\\users\\pluka\\desktop\\grafika\\proj1\\proj1\\components\\polygon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{18AE1E6D-08A3-4F24-9026-5A97C7B5ADEF}|Proj1\\Proj1.csproj|solutionrelative:proj1\\components\\polygon.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{18AE1E6D-08A3-4F24-9026-5A97C7B5ADEF}|Proj1\\Proj1.csproj|c:\\users\\pluka\\desktop\\grafika\\proj1\\proj1\\components\\visuals.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{18AE1E6D-08A3-4F24-9026-5A97C7B5ADEF}|Proj1\\Proj1.csproj|solutionrelative:proj1\\components\\visuals.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{18AE1E6D-08A3-4F24-9026-5A97C7B5ADEF}|Proj1\\Proj1.csproj|c:\\users\\pluka\\desktop\\grafika\\proj1\\proj1\\components\\vertex.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{18AE1E6D-08A3-4F24-9026-5A97C7B5ADEF}|Proj1\\Proj1.csproj|solutionrelative:proj1\\components\\vertex.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{18AE1E6D-08A3-4F24-9026-5A97C7B5ADEF}|Proj1\\Proj1.csproj|c:\\users\\pluka\\desktop\\grafika\\proj1\\proj1\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{18AE1E6D-08A3-4F24-9026-5A97C7B5ADEF}|Proj1\\Proj1.csproj|solutionrelative:proj1\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{18AE1E6D-08A3-4F24-9026-5A97C7B5ADEF}|Proj1\\Proj1.csproj|c:\\users\\pluka\\desktop\\grafika\\proj1\\proj1\\components\\rightclickmenu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{18AE1E6D-08A3-4F24-9026-5A97C7B5ADEF}|Proj1\\Proj1.csproj|solutionrelative:proj1\\components\\rightclickmenu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{18AE1E6D-08A3-4F24-9026-5A97C7B5ADEF}|Proj1\\Proj1.csproj|c:\\users\\pluka\\desktop\\grafika\\proj1\\proj1\\components\\edge.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{18AE1E6D-08A3-4F24-9026-5A97C7B5ADEF}|Proj1\\Proj1.csproj|solutionrelative:proj1\\components\\edge.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{18AE1E6D-08A3-4F24-9026-5A97C7B5ADEF}|Proj1\\Proj1.csproj|c:\\users\\pluka\\desktop\\grafika\\proj1\\proj1\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{18AE1E6D-08A3-4F24-9026-5A97C7B5ADEF}|Proj1\\Proj1.csproj|solutionrelative:proj1\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,34 +26,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 2,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Polygon.cs",
-              "DocumentMoniker": "C:\\Users\\pluka\\Desktop\\Grafika\\Proj1\\Proj1\\Components\\Polygon.cs",
-              "RelativeDocumentMoniker": "Proj1\\Components\\Polygon.cs",
-              "ToolTip": "C:\\Users\\pluka\\Desktop\\Grafika\\Proj1\\Proj1\\Components\\Polygon.cs",
-              "RelativeToolTip": "Proj1\\Components\\Polygon.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAJEAAAAUAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-13T09:52:48.529Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "RightClickMenu.cs",
-              "DocumentMoniker": "C:\\Users\\pluka\\Desktop\\Grafika\\Proj1\\Proj1\\Components\\RightClickMenu.cs",
-              "RelativeDocumentMoniker": "Proj1\\Components\\RightClickMenu.cs",
-              "ToolTip": "C:\\Users\\pluka\\Desktop\\Grafika\\Proj1\\Proj1\\Components\\RightClickMenu.cs",
-              "RelativeToolTip": "Proj1\\Components\\RightClickMenu.cs",
-              "ViewState": "AgIAAGgAAAAAAAAAAAAUwDcAAAAtAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-13T12:18:48.309Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Document",
               "DocumentIndex": 2,
@@ -70,49 +36,48 @@
               "RelativeDocumentMoniker": "Proj1\\Components\\Vertex.cs",
               "ToolTip": "C:\\Users\\pluka\\Desktop\\Grafika\\Proj1\\Proj1\\Components\\Vertex.cs",
               "RelativeToolTip": "Proj1\\Components\\Vertex.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAEwBgAAAAIAAAAAAAAAA==",
+              "ViewState": "AgIAADAAAAAAAAAAAAAowD8AAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-13T09:23:45.892Z",
+              "WhenOpened": "2025-10-17T13:28:54.756Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Form1.cs",
-              "DocumentMoniker": "C:\\Users\\pluka\\Desktop\\Grafika\\Proj1\\Proj1\\Form1.cs",
-              "RelativeDocumentMoniker": "Proj1\\Form1.cs",
-              "ToolTip": "C:\\Users\\pluka\\Desktop\\Grafika\\Proj1\\Proj1\\Form1.cs",
-              "RelativeToolTip": "Proj1\\Form1.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAAQwAkAAAA+AAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "Visuals.cs",
+              "DocumentMoniker": "C:\\Users\\pluka\\Desktop\\Grafika\\Proj1\\Proj1\\Components\\Visuals.cs",
+              "RelativeDocumentMoniker": "Proj1\\Components\\Visuals.cs",
+              "ToolTip": "C:\\Users\\pluka\\Desktop\\Grafika\\Proj1\\Proj1\\Components\\Visuals.cs",
+              "RelativeToolTip": "Proj1\\Components\\Visuals.cs",
+              "ViewState": "AgIAADgAAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-13T09:44:47.781Z",
+              "WhenOpened": "2025-10-17T13:28:48.553Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Help.cs",
-              "DocumentMoniker": "C:\\Users\\pluka\\Desktop\\Grafika\\Proj1\\Proj1\\Components\\Help.cs",
-              "RelativeDocumentMoniker": "Proj1\\Components\\Help.cs",
-              "ToolTip": "C:\\Users\\pluka\\Desktop\\Grafika\\Proj1\\Proj1\\Components\\Help.cs",
-              "RelativeToolTip": "Proj1\\Components\\Help.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAiAAAAAAAAAA==",
+              "Title": "Form1.cs",
+              "DocumentMoniker": "C:\\Users\\pluka\\Desktop\\Grafika\\Proj1\\Proj1\\Form1.cs",
+              "RelativeDocumentMoniker": "Proj1\\Form1.cs",
+              "ToolTip": "C:\\Users\\pluka\\Desktop\\Grafika\\Proj1\\Proj1\\Form1.cs",
+              "RelativeToolTip": "Proj1\\Form1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEUAAABEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-14T20:22:53.31Z",
+              "WhenOpened": "2025-10-17T13:23:07.994Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Edge.cs",
-              "DocumentMoniker": "C:\\Users\\pluka\\Desktop\\Grafika\\Proj1\\Proj1\\Components\\Edge.cs",
-              "RelativeDocumentMoniker": "Proj1\\Components\\Edge.cs",
-              "ToolTip": "C:\\Users\\pluka\\Desktop\\Grafika\\Proj1\\Proj1\\Components\\Edge.cs",
-              "RelativeToolTip": "Proj1\\Components\\Edge.cs",
-              "ViewState": "AgIAABEAAAAAAAAAAAAAwBcAAAAfAAAAAAAAAA==",
+              "DocumentIndex": 3,
+              "Title": "Form1.cs [Projekt]",
+              "DocumentMoniker": "C:\\Users\\pluka\\Desktop\\Grafika\\Proj1\\Proj1\\Form1.cs",
+              "RelativeDocumentMoniker": "Proj1\\Form1.cs",
+              "ToolTip": "C:\\Users\\pluka\\Desktop\\Grafika\\Proj1\\Proj1\\Form1.cs [Projekt]",
+              "RelativeToolTip": "Proj1\\Form1.cs [Projekt]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-13T09:49:56.742Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-17T13:19:48.071Z",
+              "EditorCaption": " [Projekt]"
             }
           ]
         }

@@ -14,8 +14,8 @@
         public VertexType Type { get; set; } = VertexType.G0;
         public Vertex(Point p)
         {
-            Width = 24;
-            Height = 24;
+            Width = 18;
+            Height = 18;
             Location = new Point(p.X - Width / 2, p.Y - Height / 2);
             SetStyle(ControlStyles.UserPaint
                 | ControlStyles.AllPaintingInWmPaint
@@ -46,8 +46,7 @@
                 if (Parent is Polygon polygon)
                 {
                     Type = VertexType.G0;
-                    LeftEdge!.Modifier = EdgeModifier.Normal;
-                    RightEdge!.Modifier = EdgeModifier.Normal;
+                    polygon.Invalidate();
                 }
             };
             g1modifier.Click += (_, __) =>
@@ -58,16 +57,23 @@
                     if (v1 == this) v1 = LeftEdge!.V2;
                     Vertex v2 = RightEdge!.V1;
                     if (v2 == this) v2 = RightEdge!.V2;
-                    if (v1.Type == VertexType.G1 || v2.Type == VertexType.G1) return;
+                    if (v1.Type == VertexType.G1 || v2.Type == VertexType.G1)
+                    {
+                        MessageBox.Show("Adjacent vertex is G1!", "404", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
 
                     bool b = true;
                     if (LeftEdge!.Type == EdgeType.SemiCircle && RightEdge!.Type == EdgeType.Normal) b = false;
                     if (LeftEdge!.Type == EdgeType.Normal && RightEdge!.Type == EdgeType.SemiCircle) b = false;
-                    if (b) return;
+                    if (LeftEdge!.Type == EdgeType.SemiCircle && RightEdge!.Type == EdgeType.SemiCircle) b = false;
+                    if (b)
+                    {
+                        MessageBox.Show("No semicircle edge!", "404", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
 
                     Type = VertexType.G1;
-                    LeftEdge!.Modifier = EdgeModifier.Normal;
-                    RightEdge!.Modifier = EdgeModifier.Normal;
 
                     polygon.Invalidate();
                 }
@@ -94,8 +100,16 @@
 
             using var brush = new SolidBrush(Color.Red);
             using var pen = new Pen(Color.Black);
+
             g.FillEllipse(brush, 0, 0, Width - 1, Height - 1);
             g.DrawEllipse(pen, 0, 0, Width - 1, Height - 1);
+
+            if (Type == VertexType.G1)
+            {
+                Font font = new(FontFamily.GenericSansSerif, 6f, FontStyle.Bold);
+                StringFormat sf = new() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+                g.DrawString("G1", font, Brushes.White, new RectangleF(0, 0, Width, Height), sf);
+            }
         }
         private void Vertex_MouseDown(object? sender, MouseEventArgs e)
         {
@@ -103,11 +117,13 @@
             Point mouse = Parent.PointToClient(Cursor.Position);
             if (e.Button == MouseButtons.Left && ModifierKeys.HasFlag(Keys.Control) && Parent is Polygon polygon1)
             {
+                polygon1.SuspendLayout();
                 polygon1.MouseDownPolygon(mouse, true, null);
                 Capture = true;
             }
             else if (e.Button == MouseButtons.Left && Parent is Polygon polygon2)
             {
+                polygon2.SuspendLayout();
                 polygon2.MouseDownPolygon(mouse, false, this);
                 Capture = true;
             }
@@ -129,6 +145,7 @@
                 poly.MouseUpPolygon();
                 Capture = false;
             }
+            if (Parent is Polygon p) p.ResumeLayout(false);
         }
     }
 }

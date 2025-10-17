@@ -15,14 +15,6 @@
             }
             List<Vertex> leftchain = [];
 
-            if (rightchain.Count == Vertices.Count)
-            {
-                rightchain.RemoveAt(0);
-                if (start.LeftEdge!.V2 == start) leftchain.Add(start.LeftEdge!.V1);
-                else leftchain.Add(start.LeftEdge!.V2);
-                return (leftchain, rightchain);
-            }
-
             leftchain.Add(start);
             while (true)
             {
