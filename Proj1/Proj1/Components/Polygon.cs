@@ -9,6 +9,7 @@ namespace Proj1.Components
         public Point MouseOffset { get; set; } = Point.Empty;
         public List<Vertex> Vertices { get; set; } = [];
         public List<Edge> Edges { get; set; } = [];
+        public List<(BezierSegment, BezierSegment, Edge)> Segments { get; set; } = [];
         public RightClickMenu? Rcm { get; set; } = null;
         public Polygon()
         {
@@ -42,6 +43,14 @@ namespace Proj1.Components
                 string mod = Visuals.SwitchEdgeLabel(edge.Modifier, edge.ConstLength);
                 Visuals.DrawEdgeLabel(g, edge, mod);
             }
+            foreach(var element in Segments)
+            {
+                if (element.Item3.V1.Type == VertexType.G1 || element.Item3.V2.Type == VertexType.G1) Visuals.DrawBezierG1(g, element.Item3.V1, element.Item1, element.Item2, element.Item3.V2, element.Item3, pen1);
+                else Visuals.DrawBezier(g, element.Item3.V1, element.Item1, element.Item2, element.Item3.V2, pen1);
+                g.DrawLine(pen1, element.Item3.V1.Center(), element.Item1.Center());
+                g.DrawLine(pen1, element.Item1.Center(), element.Item2.Center());
+                g.DrawLine(pen1, element.Item2.Center(), element.Item3.V2.Center());
+            }
         }
         public void AddVertexOnMiddle(Edge e)
         {
@@ -72,6 +81,24 @@ namespace Proj1.Components
             Edges.Remove(e);
             Edges.Add(e1);
             Edges.Add(e2);
+        }
+        public void AddBezierSegment(Edge e)
+        {
+            int x1 = (int)(e.V1.Center().X + (e.V2.Center().X - e.V1.Center().X) * (1.0 / 3));
+            int y1 = (int)(e.V1.Center().Y + (e.V2.Center().Y - e.V1.Center().Y) * (1.0 / 3));
+            int x2 = (int)(e.V1.Center().X + (e.V2.Center().X - e.V1.Center().X) * (2.0 / 3));
+            int y2 = (int)(e.V1.Center().Y + (e.V2.Center().Y - e.V1.Center().Y) * (2.0 / 3));
+
+            BezierSegment v1 = new(new(x1, y1));
+            BezierSegment v2 = new(new(x2, y2));
+            Segments.Add((v1, v2, e));
+            Controls.Add(v1);
+            Controls.Add(v2);
+
+            v1.BackColor = BackColor;
+            v2.BackColor = BackColor;
+            v1.BringToFront();
+            v2.BringToFront();
         }
         public void RemoveVertexOnMiddle(Vertex v)
         {
@@ -108,6 +135,20 @@ namespace Proj1.Components
             Edges.Remove(edges[0]);
             Edges.Remove(edges[1]);
         }
+        public void RemoveBesierSegment(Edge e)
+        {
+            for (int i = Segments.Count - 1; i >= 0; i--)
+            {
+                var element = Segments[i];
+                if (element.Item3 == e)
+                {
+                    Controls.Remove(element.Item1);
+                    Controls.Remove(element.Item2);
+                    Segments.RemoveAt(i);
+                    break;
+                }
+            }
+        }
         public void MouseDownPolygon(Point mouse, bool isCtrlClicked, Vertex? draggedVertex)
         {
             IsDragging = true;
@@ -116,6 +157,17 @@ namespace Proj1.Components
             else
             {
                 if (draggedVertex != null) MouseOffset = new Point(mouse.X - draggedVertex.Location.X, mouse.Y - draggedVertex.Location.Y);
+                else MouseOffset = mouse;
+            }
+        }
+        public void MouseDownBezier(Point mouse, bool isCtrlClicked, BezierSegment? draggedSegment)
+        {
+            IsDragging = true;
+            IsCtrlClicked = isCtrlClicked;
+            if (IsCtrlClicked) MouseOffset = mouse;
+            else
+            {
+                if (draggedSegment != null) MouseOffset = new Point(mouse.X - draggedSegment.Location.X, mouse.Y - draggedSegment.Location.Y);
                 else MouseOffset = mouse;
             }
         }
@@ -132,6 +184,11 @@ namespace Proj1.Components
                     return;
                 }
                 foreach (Vertex v in Vertices) v.Location = new Point(v.Location.X + dx, v.Location.Y + dy);
+                foreach (var element in Segments)
+                {
+                    element.Item1.Location = new Point(element.Item1.Location.X + dx, element.Item1.Location.Y + dy);
+                    element.Item2.Location = new Point(element.Item2.Location.X + dx, element.Item2.Location.Y + dy);
+                }
                 MouseOffset = new Point(MouseOffset.X + dx, MouseOffset.Y + dy);
                 Invalidate();
             }
@@ -165,10 +222,42 @@ namespace Proj1.Components
                 }
             }
         }
+        public void MouseMoveBezier(Point mouse, BezierSegment dragged)
+        {
+            if (!IsDragging) return;
+            if (IsCtrlClicked)
+            {
+                int dx = mouse.X - MouseOffset.X;
+                int dy = mouse.Y - MouseOffset.Y;
+                if (dx == 0 && dy == 0)
+                {
+                    MouseOffset = mouse;
+                    return;
+                }
+                foreach (Vertex v in Vertices) v.Location = new Point(v.Location.X + dx, v.Location.Y + dy);
+                foreach (var element in Segments)
+                {
+                    element.Item1.Location = new Point(element.Item1.Location.X + dx, element.Item1.Location.Y + dy);
+                    element.Item2.Location = new Point(element.Item2.Location.X + dx, element.Item2.Location.Y + dy);
+                }
+                MouseOffset = new Point(MouseOffset.X + dx, MouseOffset.Y + dy);
+                Invalidate();
+            }
+            else
+            {
+                Point newLocation = new(mouse.X - MouseOffset.X, mouse.Y - MouseOffset.Y);
+                dragged.Location = newLocation;
+                Invalidate();
+            }
+        }
         public void MouseUpPolygon()
         {
             IsDragging = false;
             IsCtrlClicked = false;
+        }
+        public void MouseUpBezier()
+        {
+            IsDragging = false;
         }
     }
 }

@@ -76,6 +76,7 @@
         }
         private void AddVertex()
         {
+            Owner.RemoveBesierSegment(Hit!);
             Owner.AddVertexOnMiddle(Hit!);
             Owner.Invalidate();
             Hit = null;
@@ -83,16 +84,19 @@
         private void ApplyTypeNormal()
         {
             Hit!.Type = EdgeType.Normal;
+            Owner.RemoveBesierSegment(Hit!);
             Owner.Invalidate();
         }
         private void ApplyTypeSemiCircle()
         {
             Hit!.Type = EdgeType.SemiCircle;
+            Owner.RemoveBesierSegment(Hit!);
             Owner.Invalidate();
         }
         private void ApplyTypeBezier()
         {
             Hit!.Type = EdgeType.Bezier;
+            Owner.AddBezierSegment(Hit!);
             Owner.Invalidate();
         }
         private void ApplyModifierNormal()
@@ -122,11 +126,15 @@
             double newCenterY = c1.Y + uy * desiredLength;
             int newLocX = (int)Math.Round(newCenterX - Hit!.V2.Width / 2.0);
             int newLocY = (int)Math.Round(newCenterY - Hit!.V2.Height / 2.0);
+
             Point newLocation = new(newLocX, newLocY);
             Hit!.V2.Location = newLocation;
-            Hit!.Modifier = EdgeModifier.Const;
+
             Hit!.ConstLength = Hit!.CurrLength();
-            ModifierMove(newLocation, Hit!.V2);
+            Hit!.Modifier = EdgeModifier.Const;
+
+            ModifierMove(Hit!.V2);
+
             Owner.Invalidate();
         }
         private void ApplyModifierVertical()
@@ -142,55 +150,46 @@
                 return;
             }
 
-            Hit!.Modifier = EdgeModifier.Vertical;
-            Hit!.ConstLength = 0;
-
             Point newLocation = new(Hit!.V1.Location.X, Hit!.V1.Location.Y + Hit!.CurrLength());
             Hit!.V2.Location = newLocation;
-            ModifierMove(newLocation, Hit!.V2);
+
+            Hit!.ConstLength = 0;
+            Hit!.Modifier = EdgeModifier.Vertical;
+
+            ModifierMove(Hit!.V2);
 
             Owner.Invalidate();
         }
         private void ApplyModifierLock45()
         {
-            Hit!.Modifier = EdgeModifier.Lock45;
-            Hit!.ConstLength = 0;
-
             int a = (int)(Hit!.CurrLength() / Math.Sqrt(2));
+
             Point newLocation = new(Hit!.V1.Location.X + a, Hit!.V1.Location.Y - a);
             Hit!.V2.Location = newLocation;
-            ModifierMove(newLocation, Hit!.V2);
+
+            Hit!.ConstLength = 0;
+            Hit!.Modifier = EdgeModifier.Lock45;
+
+            ModifierMove(Hit!.V2);
 
             Owner.Invalidate();
         }
-        private void ModifierMove(Point mouse, Vertex dragged)
+        private void ModifierMove(Vertex dragged)
         {
             (List<Vertex> leftchain, List<Vertex> rightchain) = Owner.GetMoveChain(dragged);
-            if (leftchain.Count == 0 && rightchain.Count == 0)
+            Vertex v = dragged;
+            for (int i = 0; i < rightchain.Count; i++)
             {
-                Point newLocation = new(mouse.X - Owner.MouseOffset.X, mouse.Y - Owner.MouseOffset.Y);
-                dragged.Location = newLocation;
-                Owner.Invalidate();
+                Owner.ApplyMove(v, rightchain[i]);
+                v = rightchain[i];
             }
-            else
+            v = dragged;
+            for (int i = 0; i < leftchain.Count; i++)
             {
-                Point newLocation = new(mouse.X - Owner.MouseOffset.X, mouse.Y - Owner.MouseOffset.Y);
-                dragged.Location = newLocation;
-
-                Vertex v = dragged;
-                for (int i = 0; i < rightchain.Count; i++)
-                {
-                    Owner.ApplyMove(v, rightchain[i]);
-                    v = rightchain[i];
-                }
-                v = dragged;
-                for (int i = 0; i < leftchain.Count; i++)
-                {
-                    Owner.ApplyMove(v, leftchain[i]);
-                    v = leftchain[i];
-                }
-                Owner.Invalidate();
+                Owner.ApplyMove(v, leftchain[i]);
+                v = leftchain[i];
             }
+            Owner.Invalidate();
         }
     }
 }

@@ -67,6 +67,9 @@
                     if (LeftEdge!.Type == EdgeType.SemiCircle && RightEdge!.Type == EdgeType.Normal) b = false;
                     if (LeftEdge!.Type == EdgeType.Normal && RightEdge!.Type == EdgeType.SemiCircle) b = false;
                     if (LeftEdge!.Type == EdgeType.SemiCircle && RightEdge!.Type == EdgeType.SemiCircle) b = false;
+                    if (LeftEdge!.Type == EdgeType.Bezier && RightEdge!.Type == EdgeType.Normal) b = false;
+                    if (LeftEdge!.Type == EdgeType.Normal && RightEdge!.Type == EdgeType.Bezier) b = false;
+                    if (LeftEdge!.Type == EdgeType.Bezier && RightEdge!.Type == EdgeType.Bezier) b = false;
                     if (b)
                     {
                         MessageBox.Show("No semicircle edge!", "404", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -117,13 +120,11 @@
             Point mouse = Parent.PointToClient(Cursor.Position);
             if (e.Button == MouseButtons.Left && ModifierKeys.HasFlag(Keys.Control) && Parent is Polygon polygon1)
             {
-                polygon1.SuspendLayout();
                 polygon1.MouseDownPolygon(mouse, true, null);
                 Capture = true;
             }
             else if (e.Button == MouseButtons.Left && Parent is Polygon polygon2)
             {
-                polygon2.SuspendLayout();
                 polygon2.MouseDownPolygon(mouse, false, this);
                 Capture = true;
             }
@@ -145,7 +146,6 @@
                 poly.MouseUpPolygon();
                 Capture = false;
             }
-            if (Parent is Polygon p) p.ResumeLayout(false);
         }
     }
 }

@@ -24,6 +24,132 @@
                 if (e2 < dx) { err += dx; y0 += sy; }
             }
         }
+        public static void DrawBezier(Graphics g, Vertex v0, BezierSegment v1, BezierSegment v2, Vertex v3, Pen pen, int segments = 64)
+        {
+            var p0 = new PointF(v0.Center().X, v0.Center().Y);
+            var p1 = new PointF(v1.Center().X, v1.Center().Y);
+            var p2 = new PointF(v2.Center().X, v2.Center().Y);
+            var p3 = new PointF(v3.Center().X, v3.Center().Y);
+            if (segments < 1) segments = 1;
+            float dt = 1f / segments;
+            PointF prev = p0;
+            for (int i = 1; i <= segments; i++)
+            {
+                float t = i * dt;
+                float u = 1 - t;
+
+                float b0 = u * u * u;
+                float b1 = 3f * u * u * t;
+                float b2 = 3f * u * t * t;
+                float b3 = t * t * t;
+
+                float x = b0 * p0.X + b1 * p1.X + b2 * p2.X + b3 * p3.X;
+                float y = b0 * p0.Y + b1 * p1.Y + b2 * p2.Y + b3 * p3.Y;
+
+                var cur = new PointF(x, y);
+                g.DrawLine(pen, prev, cur);
+                prev = cur;
+            }
+        }
+        public static void DrawBezier(Graphics g, PointF p0, PointF p1, PointF p2, PointF p3, Pen pen, int segments = 64)
+        {
+            if (segments < 1) segments = 1;
+            float dt = 1f / segments;
+            PointF prev = p0;
+            for (int i = 1; i <= segments; i++)
+            {
+                float t = i * dt;
+                float u = 1 - t;
+                float b0 = u * u * u;
+                float b1 = 3f * u * u * t;
+                float b2 = 3f * u * t * t;
+                float b3 = t * t * t;
+                float x = b0 * p0.X + b1 * p1.X + b2 * p2.X + b3 * p3.X;
+                float y = b0 * p0.Y + b1 * p1.Y + b2 * p2.Y + b3 * p3.Y;
+                PointF cur = new PointF(x, y);
+                g.DrawLine(pen, prev, cur);
+                prev = cur;
+            }
+        }
+        private static PointF? TryGetAdjacentTangentSimpleAA(Vertex v, Edge edge)
+        {
+            Edge adj = (v.LeftEdge != null && v.LeftEdge != edge) ? v.LeftEdge
+                     : (v.RightEdge != null && v.RightEdge != edge) ? v.RightEdge
+                     : null!;
+            if (adj == null) return null;
+            Vertex other = (adj.V1 == v) ? adj.V2 : adj.V1;
+            double dx = other.Center().X - v.Center().X;
+            double dy = other.Center().Y - v.Center().Y;
+            double len = Math.Sqrt(dx * dx + dy * dy);
+            if (len < 1e-6) return null;
+            return new PointF((float)(dx / len), (float)(dy / len));
+        }
+        public static void DrawBezierG1(Graphics g, Vertex v0, BezierSegment b1, BezierSegment b2, Vertex v3, Edge edge, Pen pen, int segments = 64)
+        {
+            // punkty aktualne
+            var p0 = new PointF(v0.Center().X, v0.Center().Y);
+            var p1 = new PointF(b1.Center().X, b1.Center().Y);
+            var p2 = new PointF(b2.Center().X, b2.Center().Y);
+            var p3 = new PointF(v3.Center().X, v3.Center().Y);
+
+            // fallback: jeśli żaden z końców nie jest G1 -> normalny rysunek
+            bool startG1 = v0.Type == VertexType.G1;
+            bool endG1 = v3.Type == VertexType.G1;
+            if (!startG1 && !endG1)
+            {
+                DrawBezier(g, p0, p1, p2, p3, pen, segments);
+                return;
+            }
+
+            // nowe kontrolne punkty, kopiujemy istniejące i ewentualnie poprawiamy
+            PointF newP1 = p1;
+            PointF newP2 = p2;
+
+            // helper do odległości
+            double distP03 = Math.Sqrt((p3.X - p0.X) * (p3.X - p0.X) + (p3.Y - p0.Y) * (p3.Y - p0.Y));
+            float defaultLen = (float)(distP03 / 3.0); // typowy rozkład (jeśli brak oryginalnej długości)
+
+            // jeśli start jest G1 -> ustaw P1 wzdłuż tangenta z sąsiedniej krawędzi
+            if (startG1)
+            {
+                var t = TryGetAdjacentTangentSimpleAA(v0, edge);
+                if (t.HasValue)
+                {
+                    // len: preferuj istniejącą odległość p1-p0, jeśli sensowna
+                    double curLen = Math.Sqrt((p1.X - p0.X) * (p1.X - p0.X) + (p1.Y - p0.Y) * (p1.Y - p0.Y));
+                    float len = (curLen > 1e-3) ? (float)curLen : defaultLen;
+                    newP1 = new PointF(p0.X + t.Value.X * len, p0.Y + t.Value.Y * len);
+                }
+                else
+                {
+                    // brak tangenta -> fallback do normalnego rysunku
+                    DrawBezier(g, p0, p1, p2, p3, pen, segments);
+                    return;
+                }
+            }
+
+            // jeśli koniec jest G1 -> ustaw P2 tak, aby pochodna w t=1 była równoległa do tangenta sąsiedniej krawędzi
+            if (endG1)
+            {
+                var t = TryGetAdjacentTangentSimpleAA(v3, edge);
+                if (t.HasValue)
+                {
+                    // tangent returned points away from v3 along its adjacent edge.
+                    // dla zakończenia P2 = P3 - tangent * len
+                    double curLen = Math.Sqrt((p2.X - p3.X) * (p2.X - p3.X) + (p2.Y - p3.Y) * (p2.Y - p3.Y));
+                    float len = (curLen > 1e-3) ? (float)curLen : defaultLen;
+                    newP2 = new PointF(p3.X - t.Value.X * len, p3.Y - t.Value.Y * len);
+                }
+                else
+                {
+                    DrawBezier(g, p0, p1, p2, p3, pen, segments);
+                    return;
+                }
+            }
+
+            // rysuj krzywą z poprawionymi uchwytami
+            DrawBezier(g, p0, newP1, newP2, p3, pen, segments);
+        }
         public static void SemiCircleG0(Graphics g, Edge e, Pen p1, Pen p2)
         {
             var a = e.V1.Center();
@@ -41,7 +167,7 @@
             bool aIsG1 = e.V1!.Type == VertexType.G1;
             var P = aIsG1 ? e.V1.Center() : e.V2.Center();
             var Q = aIsG1 ? e.V2.Center() : e.V1.Center();
-            var vP = aIsG1 ? (Vertex)e.V1 : (Vertex)e.V2;
+            var vP = aIsG1 ? e.V1 : e.V2;
             var tangent = TryGetAdjacentTangentSimple(vP, e);
 
             double nx = -tangent.Y, ny = tangent.X;
