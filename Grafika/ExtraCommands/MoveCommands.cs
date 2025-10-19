@@ -54,6 +54,8 @@ namespace Grafika.ExtraCommands
                     v.LeftEdge!.Constraint.ApplyMove(v, v.LeftEdge!.OtherVertex(v));
                     v = v.LeftEdge!.OtherVertex(v);
                 }
+
+                RepairC1.Repair(Polygon.Segments);
             }
             Polygon.Invalidate();
         }
@@ -97,6 +99,7 @@ namespace Grafika.ExtraCommands
             {
                 Point newLocation = new(mouse.X - Polygon.MouseOffset.X, mouse.Y - Polygon.MouseOffset.Y);
                 dragged.Location = newLocation;
+                RepairC1.Repair(dragged);
             }
             Polygon.Invalidate();
         }

@@ -101,6 +101,7 @@ namespace Grafika.ExtraCommands
         {
             Hit!.Visual = new Bezier();
             Polygon.TCommands.AddBezierSegment(Hit!);
+            RepairC1.Repair(Polygon.Segments);
             Polygon.Invalidate();
         }
         public void ApplyModifierNormal()

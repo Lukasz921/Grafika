@@ -92,6 +92,10 @@ namespace Grafika.ExtraCommands
 
             BezierSegment v1 = new(new(x1, y1));
             BezierSegment v2 = new(new(x2, y2));
+
+            v1.LeftVertex = e.V1;
+            v2.RightVertex = e.V2;
+
             Polygon.Segments.Add((v1, v2, e));
             Polygon.Controls.Add(v1);
             Polygon.Controls.Add(v2);

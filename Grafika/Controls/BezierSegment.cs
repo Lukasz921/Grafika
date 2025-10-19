@@ -2,6 +2,8 @@
 {
     internal class BezierSegment : Control
     {
+        public Vertex? LeftVertex { get; set; } = null;
+        public Vertex? RightVertex { get; set; } = null;
         public BezierSegment(Point p)
         {
             Width = 14;

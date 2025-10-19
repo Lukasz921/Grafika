@@ -50,6 +50,12 @@ namespace Grafika.Controls
                 StringFormat sf = new() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
                 g.DrawString("G1", font, Brushes.White, new RectangleF(0, 0, Width, Height), sf);
             }
+            if (Type == VertexType.C1)
+            {
+                Font font = new(FontFamily.GenericSansSerif, 6f, FontStyle.Bold);
+                StringFormat sf = new() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+                g.DrawString("C1", font, Brushes.White, new RectangleF(0, 0, Width, Height), sf);
+            }
         }
         public void Vertex_MouseDown(object? sender, MouseEventArgs e)
         {
