@@ -6,8 +6,8 @@
         public Vertex? RightVertex { get; set; } = null;
         public BezierSegment(Point p)
         {
-            Width = 14;
-            Height = 14;
+            Width = 16;
+            Height = 16;
             Location = new Point(p.X - Width / 2, p.Y - Height / 2);
             SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.SupportsTransparentBackColor, true);
             BackColor = Color.Transparent;

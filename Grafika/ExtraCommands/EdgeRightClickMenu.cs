@@ -148,6 +148,30 @@ namespace Grafika.ExtraCommands
             ConstForm constForm = new();
             constForm.NUP1.Value = Hit!.CurrLength();
             if (constForm.ShowDialog() == DialogResult.Cancel) return;
+
+            bool b = true;
+            double max = 0;
+            foreach (Edge e in Polygon.Edges)
+            {
+                if (e.Constraint is ConstConstraint)
+                {
+                    max += e.ConstLength;
+                }
+                else if (e.Constraint is not ConstConstraint && e != Hit!)
+                {
+                    b = false;
+                    break;
+                }
+            }
+            if (b)
+            {
+                if (max < (double)constForm.NUP1.Value)
+                {
+                    MessageBox.Show("Cannot apply - too long!", "404", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+            }
+
             double desiredLength = (double)constForm.NUP1.Value;
             var c1 = Hit!.V1.Center();
             var c2 = Hit!.V2.Center();

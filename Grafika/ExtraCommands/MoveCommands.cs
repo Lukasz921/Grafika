@@ -142,6 +142,15 @@ namespace Grafika.ExtraCommands
                     v2.LeftEdge!.Constraint.ApplyMove(v2, v2.LeftEdge!.OtherVertex(v2));
                     v2 = v2.LeftEdge!.OtherVertex(v2);
                 }
+
+                List<(BezierSegment, BezierSegment, Edge)> segments = [];
+                foreach (var segment in Polygon.Segments)
+                {
+                    if (segment.Item1 == dragged || segment.Item2 == dragged) continue;
+                    segments.Add(segment);
+                }
+                RepairG1.Repair(segments);
+                RepairC1.Repair(segments);
             }
             Polygon.Invalidate();
         }

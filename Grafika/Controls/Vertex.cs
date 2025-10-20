@@ -18,8 +18,8 @@ namespace Grafika.Controls
         public Vertex(Point p)
         {
             VRightClickMenu = new(this);
-            Width = 18;
-            Height = 18;
+            Width = 16;
+            Height = 16;
             Location = new Point(p.X - Width / 2, p.Y - Height / 2);
             SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.SupportsTransparentBackColor, true);
             BackColor = Color.Transparent;
@@ -39,23 +39,12 @@ namespace Grafika.Controls
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
             using var brush = new SolidBrush(Color.Red);
+            if (Type == VertexType.G1) brush.Color = Color.Green;
+            if (Type == VertexType.C1) brush.Color = Color.Purple;
             using var pen = new Pen(Color.Black);
 
             g.FillEllipse(brush, 0, 0, Width - 1, Height - 1);
             g.DrawEllipse(pen, 0, 0, Width - 1, Height - 1);
-
-            if (Type == VertexType.G1)
-            {
-                Font font = new(FontFamily.GenericSansSerif, 6f, FontStyle.Bold);
-                StringFormat sf = new() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-                g.DrawString("G1", font, Brushes.White, new RectangleF(0, 0, Width, Height), sf);
-            }
-            if (Type == VertexType.C1)
-            {
-                Font font = new(FontFamily.GenericSansSerif, 6f, FontStyle.Bold);
-                StringFormat sf = new() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
-                g.DrawString("C1", font, Brushes.White, new RectangleF(0, 0, Width, Height), sf);
-            }
         }
         public void Vertex_MouseDown(object? sender, MouseEventArgs e)
         {

@@ -1,5 +1,6 @@
 ﻿using Grafika.Controls;
 using Grafika.Elements;
+using Grafika.Visuals;
 
 namespace Grafika.ExtraCommands
 {
@@ -13,7 +14,7 @@ namespace Grafika.ExtraCommands
 
             Vertex v = new(new(newX, newY));
             Edge e1 = new(e.V1, v);
-            Edge e2 = new(e.V2, v);
+            Edge e2 = new(v, e.V2);
 
             if (e.V1.LeftEdge != null && e.V1.LeftEdge == e)
             {
@@ -35,6 +36,9 @@ namespace Grafika.ExtraCommands
             Polygon.Edges.Remove(e);
             Polygon.Edges.Add(e1);
             Polygon.Edges.Add(e2);
+
+            RepairG1.Repair(Polygon.Segments);
+            RepairC1.Repair(Polygon.Segments);
         }
         public void RemoveVertexOnMiddle(Vertex v)
         {
@@ -90,6 +94,9 @@ namespace Grafika.ExtraCommands
             Polygon.Edges.Add(e);
             Polygon.Edges.Remove(edges[0]);
             Polygon.Edges.Remove(edges[1]);
+
+            RepairG1.Repair(Polygon.Segments);
+            RepairC1.Repair(Polygon.Segments);
         }
         public void AddBezierSegment(Edge e)
         {
@@ -103,6 +110,11 @@ namespace Grafika.ExtraCommands
 
             v1.LeftVertex = e.V1;
             v2.RightVertex = e.V2;
+            if (e.V1.LeftEdge!.Visual is Bezier)
+            {
+                v1.LeftVertex = e.V2;
+                v2.RightVertex = e.V1;
+            }
 
             Polygon.Segments.Add((v1, v2, e));
             Polygon.Controls.Add(v1);
