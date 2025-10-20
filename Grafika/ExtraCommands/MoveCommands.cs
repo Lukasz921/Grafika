@@ -101,6 +101,20 @@ namespace Grafika.ExtraCommands
             }
             else
             {
+                if (dragged.LeftVertex != null && dragged.LeftVertex.Type == VertexType.G0)
+                {
+                    Point p = new(mouse.X - Polygon.MouseOffset.X, mouse.Y - Polygon.MouseOffset.Y);
+                    dragged.Location = p;
+                    Polygon.Invalidate();
+                    return;
+                }
+                if (dragged.RightVertex != null && dragged.RightVertex.Type == VertexType.G0)
+                {
+                    Point p = new(mouse.X - Polygon.MouseOffset.X, mouse.Y - Polygon.MouseOffset.Y);
+                    dragged.Location = p;
+                    Polygon.Invalidate();
+                    return;
+                }
                 Vertex? v;
                 Edge? edge;
                 if (dragged.LeftVertex != null)

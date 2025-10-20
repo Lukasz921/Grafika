@@ -1,5 +1,10 @@
+using Grafika.Constraints;
 using Grafika.Controls;
 using Grafika.Elements;
+using Grafika.ExtraCommands;
+using Grafika.ExtraConstraints;
+using Grafika.Visuals;
+using System.Windows.Forms.VisualStyles;
 
 namespace Grafika
 {
@@ -14,12 +19,12 @@ namespace Grafika
             };
             Controls.Add(polygon);
 
-            Vertex v1 = new(new(100, 100));
-            Vertex v2 = new(new(200, 100));
-            Vertex v3 = new(new(300, 100));
-            Vertex v4 = new(new(300, 200));
-            Vertex v5 = new(new(200, 200));
-            Vertex v6 = new(new(100, 200));
+            Vertex v1 = new(new(100, 125));
+            Vertex v2 = new(new(200, 125));
+            Vertex v3 = new(new(300, 125));
+            Vertex v4 = new(new(300, 250));
+            Vertex v5 = new(new(200, 300));
+            Vertex v6 = new(new(100, 250));
 
             Edge a = new(v1, v2);
             Edge b = new(v2, v3);
@@ -41,6 +46,21 @@ namespace Grafika
             v6.LeftEdge = e;
             v6.RightEdge = f;
 
+            EdgeRightClickMenu ercm = new(polygon);
+            ercm.Hit = a;
+            ercm.ApplyTypeBezier();
+            ercm.Hit = b;
+            ercm.ApplyModifierLock45();
+            ercm.Hit = c;
+            ercm.ApplyModifierVertical();
+            ercm.Hit = e;
+            ercm.ApplyTypeSemiCircle();
+
+            v1.Type = VertexType.C1;
+            RepairC1.Repair(polygon.Segments);
+            v5.Type = VertexType.G1;
+            RepairG1.Repair(polygon.Segments);
+
             polygon.Vertices.Add(v1);
             polygon.Controls.Add(v1);
             polygon.Vertices.Add(v2);
@@ -59,8 +79,6 @@ namespace Grafika
             polygon.Edges.Add(d);
             polygon.Edges.Add(e);
             polygon.Edges.Add(f);
-
-            
         }
         private void helpToolStripMenuItem_Click(object sender, EventArgs e)
         {

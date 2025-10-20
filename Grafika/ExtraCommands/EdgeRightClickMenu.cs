@@ -86,13 +86,13 @@ namespace Grafika.ExtraCommands
             Hit = null;
             Polygon.Invalidate();
         }
-        private void ApplyTypeNormal()
+        public void ApplyTypeNormal()
         {
             Hit!.Visual = new Bresenham();
             Polygon.TCommands.RemoveBezierSegment(Hit!);
             Polygon.Invalidate();
         }
-        private void ApplyTypeSemiCircle()
+        public void ApplyTypeSemiCircle()
         {
             if (Hit!.Constraint is not NoConstraint)
             {
@@ -103,7 +103,7 @@ namespace Grafika.ExtraCommands
             Polygon.TCommands.RemoveBezierSegment(Hit!);
             Polygon.Invalidate();
         }
-        private void ApplyTypeBezier()
+        public void ApplyTypeBezier()
         {
             if (Hit!.Constraint is not NoConstraint)
             {

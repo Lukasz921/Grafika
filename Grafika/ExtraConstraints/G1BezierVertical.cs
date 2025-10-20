@@ -12,7 +12,6 @@ namespace Grafika.ExtraConstraints
             C1.Location = new(dragged.Location.X, C1.Location.Y);
             Vertical.ApplyMove(C1, toDrag);
             RepairG1.Repair(dragged);
-            dragged.Location = new(dragged.Location.X + dragged.Width / 4, dragged.Location.Y);
         }
     }
 }
