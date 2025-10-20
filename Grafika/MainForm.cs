@@ -46,5 +46,29 @@ namespace Grafika
             polygon.Edges.Add(c);
             polygon.Edges.Add(d);
         }
+        private void helpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string str = "Projekt 1 £ukasz Przybylski - Instrukcja obs³ugi\n" +
+                         "Wierzcho³ek / segment Beziera da siê przeci¹gn¹æ LPM\n" +
+                         "Aby przenieœæ wszystkie jednoczeœnie, nale¿y wcisn¹æ lewy CTRL i LPM\n\n" +
+                         "Naciœniêcie PPM na krawêdŸ wyœwietla menu:\n" +
+                         "- Add Vertex (dodaje nowy wierzcho³ek na œrodku danej krawêdzi)\n" +
+                         "- Types (typy krawêdzi)\n" +
+                         "  - Normal (normalna krawêdŸ - algorytm Bresenhama)\n" +
+                         "  - Semicircle (pó³okr¹g - algorytm biblioteczny)\n" +
+                         "  - Bezier (tworzy segment Beziera na zadanej krawêdzi)\n" +
+                         "- Modifiers (ograniczenia na krawêdŸ)\n" +
+                         "  - Normal (brak ograniczeñ)\n" +
+                         "  - Const (sta³a d³ugoœæ krawêdzi)\n" +
+                         "  - Vertical (krawêdŸ pionowa)\n" +
+                         "  - Lock45 (krawêdŸ zablokowana pod k¹tem 45 stopni)\n\n" +
+                         "Naciœniêcie PPM na wierzcho³ek wyœwietla menu:\n" +
+                         "- Remove Vertex (usuwa zadany wierzcho³ek)\n" +
+                         "- Modifiers (ograniczenia na wierzcho³ek)\n" +
+                         "  - Normal (brak ograniczeñ)\n" +
+                         "  - G1 (ci¹g³oœæ G1)\n" +
+                         "  - C1 (ci¹g³oœæ C1)\n";
+            MessageBox.Show(str, "Help", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
     }
 }
