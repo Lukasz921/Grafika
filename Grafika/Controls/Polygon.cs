@@ -33,15 +33,15 @@ namespace Grafika.Controls
             Pen pen2 = new(Color.Green);
             foreach (Edge edge in Edges)
             {
-                edge.Visual.DrawEdge(g, edge, brush, pen1, pen2, this);
+                edge.Visual.DrawEdge(g, edge, brush, pen1, this);
                 string text = edge.Label.Label(edge);
                 Visuals.ILabel.DrawEdgeLabel(g, edge, text);
             }
             foreach (var element in Segments)
             {
-                g.DrawLine(pen1, element.Item3.V1.Center(), element.Item1.Center());
-                g.DrawLine(pen1, element.Item1.Center(), element.Item2.Center());
-                g.DrawLine(pen1, element.Item2.Center(), element.Item3.V2.Center());
+                g.DrawLine(pen2, element.Item3.V1.Center(), element.Item1.Center());
+                g.DrawLine(pen2, element.Item1.Center(), element.Item2.Center());
+                g.DrawLine(pen2, element.Item2.Center(), element.Item3.V2.Center());
             }
         }
     }

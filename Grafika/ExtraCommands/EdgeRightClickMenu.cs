@@ -1,6 +1,7 @@
 ﻿using Grafika.Constraints;
 using Grafika.Controls;
 using Grafika.Elements;
+using Grafika.ExtraConstraints;
 using Grafika.Visuals;
 
 namespace Grafika.ExtraCommands
@@ -80,7 +81,7 @@ namespace Grafika.ExtraCommands
         }
         public void AddVertex()
         {
-            Polygon.TCommands.RemoveBesierSegment(Hit!);
+            Polygon.TCommands.RemoveBezierSegment(Hit!);
             Polygon.TCommands.AddVertexOnMiddle(Hit!);
             Hit = null;
             Polygon.Invalidate();
@@ -88,19 +89,43 @@ namespace Grafika.ExtraCommands
         private void ApplyTypeNormal()
         {
             Hit!.Visual = new Bresenham();
-            Polygon.TCommands.RemoveBesierSegment(Hit!);
+            Polygon.TCommands.RemoveBezierSegment(Hit!);
             Polygon.Invalidate();
         }
         private void ApplyTypeSemiCircle()
         {
+            if (Hit!.Constraint is not NoConstraint)
+            {
+                MessageBox.Show("Cannot aply semicircle to constraint edge!", "404", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
             Hit!.Visual = new SemiCircle();
-            Polygon.TCommands.RemoveBesierSegment(Hit!);
+            Polygon.TCommands.RemoveBezierSegment(Hit!);
             Polygon.Invalidate();
         }
         private void ApplyTypeBezier()
         {
+            if (Hit!.Constraint is not NoConstraint)
+            {
+                MessageBox.Show("Cannot aply Bezier to constraint edge!", "404", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            Edge e1;
+            Edge e2;
+            if (Hit!.V1.LeftEdge == Hit) e1 = Hit!.V1.RightEdge!;
+            else e1 = Hit!.V1.LeftEdge!;
+            if (Hit!.V2.LeftEdge == Hit) e2 = Hit!.V2.RightEdge!;
+            else e2 = Hit!.V2.LeftEdge!;
+            if (e1.Visual is Bezier || e2.Visual is Bezier)
+            {
+                MessageBox.Show("Adjecent edge is Bezier type!", "404", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
             Hit!.Visual = new Bezier();
             Polygon.TCommands.AddBezierSegment(Hit!);
+            RepairG1.Repair(Polygon.Segments);
             RepairC1.Repair(Polygon.Segments);
             Polygon.Invalidate();
         }
@@ -108,11 +133,18 @@ namespace Grafika.ExtraCommands
         {
             Hit!.ConstLength = 0;
             Hit!.Constraint = new NoConstraint();
+            Hit!.G1BezierConstraint = new G1BezierNoConstraint();
+            Hit!.C1BezierConstraint = new C1BezierNoConstraint();
             Hit!.Label = new NormalLabel();
             Polygon.Invalidate();
         }
         public void ApplyModifierConst()
         {
+            if (Hit!.Visual is not Bresenham)
+            {
+                MessageBox.Show("Cannot aply constraint to Bezier type edge!", "404", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
             ConstForm constForm = new();
             constForm.NUP1.Value = Hit!.CurrLength();
             if (constForm.ShowDialog() == DialogResult.Cancel) return;
@@ -138,14 +170,23 @@ namespace Grafika.ExtraCommands
 
             Hit!.ConstLength = Hit!.CurrLength();
             Hit!.Constraint = new ConstConstraint();
+            Hit!.G1BezierConstraint = new G1BezierConst();
+            Hit!.C1BezierConstraint = new C1BezierConst();
             Hit!.Label = new ConstLabel();
 
             Move(Hit!.V2);
+            RepairG1.Repair(Polygon.Segments);
+            RepairC1.Repair(Polygon.Segments);
 
             Polygon.Invalidate();
         }
         public void ApplyModifierVertical()
         {
+            if (Hit!.Visual is not Bresenham)
+                {
+                MessageBox.Show("Cannot aply constraint to Bezier type edge!", "404", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
             bool b = false;
             if (Hit != null && (Hit.V1.LeftEdge!.Constraint is VerticalConstraint || Hit.V1.RightEdge!.Constraint is VerticalConstraint)) b = true;
             if (Hit != null && (Hit.V2.LeftEdge!.Constraint is VerticalConstraint || Hit.V2.RightEdge!.Constraint is VerticalConstraint)) b = true;
@@ -161,14 +202,23 @@ namespace Grafika.ExtraCommands
 
             Hit!.ConstLength = 0;
             Hit!.Constraint = new VerticalConstraint();
+            Hit!.G1BezierConstraint = new G1BezierVertical();
+            Hit!.C1BezierConstraint = new C1BezierVertical();
             Hit!.Label = new VerticalLabel();
 
             Move(Hit!.V2);
+            RepairG1.Repair(Polygon.Segments);
+            RepairC1.Repair(Polygon.Segments);
 
             Polygon.Invalidate();
         }
         public void ApplyModifierLock45()
         {
+            if (Hit!.Visual is not Bresenham)
+            {
+                MessageBox.Show("Cannot aply constraint to Bezier type edge!", "404", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
             int a = (int)(Hit!.CurrLength() / Math.Sqrt(2));
 
             Point newLocation = new(Hit!.V1.Location.X + a, Hit!.V1.Location.Y - a);
@@ -176,9 +226,13 @@ namespace Grafika.ExtraCommands
 
             Hit!.ConstLength = 0;
             Hit!.Constraint = new Lock45Constraint();
+            Hit!.G1BezierConstraint = new G1BezierLock45();
+            Hit!.C1BezierConstraint = new C1BezierLock45();
             Hit!.Label = new Lock45Label();
 
             Move(Hit!.V2);
+            RepairG1.Repair(Polygon.Segments);
+            RepairC1.Repair(Polygon.Segments);
 
             Polygon.Invalidate();
         }

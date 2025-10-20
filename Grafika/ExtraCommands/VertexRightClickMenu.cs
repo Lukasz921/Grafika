@@ -50,6 +50,7 @@ namespace Grafika.ExtraCommands
                     }
 
                     Vertex.Type = VertexType.G1;
+                    RepairG1.Repair(polygon.Segments);
 
                     polygon.Invalidate();
                 }
@@ -70,7 +71,6 @@ namespace Grafika.ExtraCommands
                     }
 
                     Vertex.Type = VertexType.C1;
-
                     RepairC1.Repair(polygon.Segments);
 
                     polygon.Invalidate();

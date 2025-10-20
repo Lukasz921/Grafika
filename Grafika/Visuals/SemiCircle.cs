@@ -5,12 +5,13 @@ namespace Grafika.Visuals
 {
     internal class SemiCircle : IVisual
     {
-        public void DrawEdge(Graphics g, Edge e, SolidBrush brush, Pen pen1, Pen pen2, Polygon polygon)
+        public void DrawEdge(Graphics g, Edge e, SolidBrush brush, Pen pen1, Polygon polygon)
         {
-            if (e.V1.Type == VertexType.G0 && e.V2.Type == VertexType.G0) SemiCircleG0(g, e, pen1, pen2);
-            else SemiCircleG1(g, e, pen1, pen2);
+            if (e.V1.Type == VertexType.G0 && e.V2.Type == VertexType.G0) SemiCircleG0(g, e, pen1);
+            else if (e.V1.Type == VertexType.G1 || e.V2.Type == VertexType.G1) SemiCircleG1(g, e, pen1);
+            else SemiCircleG0(g, e, pen1);
         }
-        public static void SemiCircleG0(Graphics g, Edge e, Pen pen1, Pen pen2)
+        public static void SemiCircleG0(Graphics g, Edge e, Pen pen1)
         {
             var a = e.V1.Center();
             var b = e.V2.Center();
@@ -20,9 +21,13 @@ namespace Grafika.Visuals
             var rect = new RectangleF(cx - r, cy - r, r * 2f, r * 2f);
             double angleRad = Math.Atan2(a.Y - cy, a.X - cx);
             g.DrawArc(pen1, rect, (float)(angleRad * 180.0 / Math.PI), 180f);
-            g.DrawLine(pen2, e.V1.Center(), e.V2.Center());
+            Pen dashedPen = new(Color.Black)
+            {
+                DashStyle = System.Drawing.Drawing2D.DashStyle.Dash
+            };
+            g.DrawLine(dashedPen, e.V1.Center(), e.V2.Center());
         }
-        public static void SemiCircleG1(Graphics g, Edge e, Pen pen1, Pen pen2)
+        public static void SemiCircleG1(Graphics g, Edge e, Pen pen1)
         {
             bool aIsG1 = e.V1!.Type == VertexType.G1;
             var P = aIsG1 ? e.V1.Center() : e.V2.Center();
@@ -53,7 +58,11 @@ namespace Grafika.Visuals
 
             var arcRect = new RectangleF((float)(cx - radius), (float)(cy - radius), (float)(2 * radius), (float)(2 * radius));
             g.DrawArc(pen1, arcRect, (float)(angleP * 180.0 / Math.PI), (float)sweep);
-            g.DrawLine(pen2, e.V1.Center(), e.V2.Center());
+            Pen dashedPen = new(Color.Black)
+            {
+                DashStyle = System.Drawing.Drawing2D.DashStyle.Dash
+            };
+            g.DrawLine(dashedPen, e.V1.Center(), e.V2.Center());
         }
         public static PointF TryGetAdjacentTangentSimple(Vertex v, Edge currentEdge)
         {

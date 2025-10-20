@@ -44,11 +44,14 @@ namespace Grafika.ExtraCommands
             {
                 if (Polygon.Segments[i].Item3 == v.LeftEdge)
                 {
-                    RemoveBesierSegment(v.LeftEdge);
+                    RemoveBezierSegment(v.LeftEdge);
                 }
+            }
+            for (int i = 0; i < Polygon.Segments.Count; i++)
+            {
                 if (Polygon.Segments[i].Item3 == v.RightEdge)
                 {
-                    RemoveBesierSegment(v.RightEdge);
+                    RemoveBezierSegment(v.RightEdge);
                 }
             }
 
@@ -64,6 +67,11 @@ namespace Grafika.ExtraCommands
             if (edges[1].V2 == v) v2 = edges[1].V1;
             else v2 = edges[1].V2;
 
+            if (!(v1.Type == VertexType.G0 || v2.Type == VertexType.G0))
+            {
+                v1.Type = VertexType.G0;
+            }
+
             Edge e = new(v1, v2);
 
             if (v1.LeftEdge != null && (v1.LeftEdge.V1 == v || v1.LeftEdge.V2 == v))
@@ -76,7 +84,7 @@ namespace Grafika.ExtraCommands
                 v1.RightEdge = e;
                 v2.LeftEdge = e;
             }
-
+      
             Polygon.Vertices.Remove(v);
             Polygon.Controls.Remove(v);
             Polygon.Edges.Add(e);
@@ -105,7 +113,7 @@ namespace Grafika.ExtraCommands
             v1.BringToFront();
             v2.BringToFront();
         }
-        public void RemoveBesierSegment(Edge e)
+        public void RemoveBezierSegment(Edge e)
         {
             for (int i = Polygon.Segments.Count - 1; i >= 0; i--)
             {

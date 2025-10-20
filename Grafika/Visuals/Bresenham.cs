@@ -5,7 +5,7 @@ namespace Grafika.Visuals
 {
     internal class Bresenham : IVisual
     {
-        public void DrawEdge(Graphics g, Edge e, SolidBrush brush, Pen pen1, Pen pen2, Polygon polygon)
+        public void DrawEdge(Graphics g, Edge e, SolidBrush brush, Pen pen1, Polygon polygon)
         {
             int x0 = e.V1.Center().X;
             int y0 = e.V1.Center().Y;

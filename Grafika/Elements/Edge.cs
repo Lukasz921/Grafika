@@ -1,5 +1,6 @@
 ﻿using Grafika.Constraints;
 using Grafika.Controls;
+using Grafika.ExtraConstraints;
 using Grafika.Visuals;
 
 namespace Grafika.Elements
@@ -16,6 +17,8 @@ namespace Grafika.Elements
         public int ConstLength { get; set; } = 0;
         public IVisual Visual { get; set; } = new Bresenham();
         public IConstraint Constraint { get; set; } = new NoConstraint();
+        public IG1BezierConstraint G1BezierConstraint { get; set; } = new G1BezierNoConstraint();
+        public IC1BezierConstraint C1BezierConstraint { get; set; } = new C1BezierNoConstraint();
         public ILabel Label { get; set; } = new NormalLabel();
         public int CurrLength()
         {

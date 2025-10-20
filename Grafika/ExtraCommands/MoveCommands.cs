@@ -1,4 +1,7 @@
-﻿using Grafika.Controls;
+﻿using Grafika.Constraints;
+using Grafika.Controls;
+using Grafika.Elements;
+using Grafika.ExtraConstraints;
 
 namespace Grafika.ExtraCommands
 {
@@ -55,6 +58,7 @@ namespace Grafika.ExtraCommands
                     v = v.LeftEdge!.OtherVertex(v);
                 }
 
+                RepairG1.Repair(Polygon.Segments);
                 RepairC1.Repair(Polygon.Segments);
             }
             Polygon.Invalidate();
@@ -97,9 +101,47 @@ namespace Grafika.ExtraCommands
             }
             else
             {
+                Vertex? v;
+                Edge? edge;
+                if (dragged.LeftVertex != null)
+                {
+                    v = dragged.LeftVertex;
+                    edge = v.LeftEdge;
+                }
+                else
+                {
+                    v = dragged.RightVertex;
+                    edge = v!.RightEdge;
+                }
+                if (v == null) return;
+                if (edge == null) return;
+                Vertex v2 = edge.OtherVertex(v);
+
+                double desiredLen = Math.Sqrt((dragged.Center().X - v.Center().X) * (dragged.Center().X - v.Center().X) + (dragged.Center().Y - v.Center().Y) * (dragged.Center().Y - v.Center().Y));
                 Point newLocation = new(mouse.X - Polygon.MouseOffset.X, mouse.Y - Polygon.MouseOffset.Y);
                 dragged.Location = newLocation;
-                RepairC1.Repair(dragged);
+
+                if (v.Type == VertexType.G1)
+                {
+                    edge.G1BezierConstraint.ApplyMove(dragged, v, v2, desiredLen);
+                }
+                else if (v.Type == VertexType.C1)
+                {
+                    edge.C1BezierConstraint.ApplyMove(dragged, v, v2, desiredLen);
+                }
+
+                Vertex d = v2;
+                while (v2.RightEdge!.OtherVertex(v2) != v)
+                {
+                    v2.RightEdge!.Constraint.ApplyMove(v2, v2.RightEdge!.OtherVertex(v2));
+                    v2 = v2.RightEdge!.OtherVertex(v2);
+                }
+                v2 = d;
+                while (v2.LeftEdge!.OtherVertex(v2) != v)
+                {
+                    v2.LeftEdge!.Constraint.ApplyMove(v2, v2.LeftEdge!.OtherVertex(v2));
+                    v2 = v2.LeftEdge!.OtherVertex(v2);
+                }
             }
             Polygon.Invalidate();
         }
